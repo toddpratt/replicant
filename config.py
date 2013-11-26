@@ -1,13 +1,15 @@
 import json
+import os
 
 class Configuration(object):
 
   def __init__(self, filename):
     self.filename = filename
+    self._config = None
 
   def load(self):
-    if os.path.isfile(filename):
-      with open(filename) as config_file:
+    if os.path.isfile(self.filename):
+      with open(self.filename) as config_file:
         self._config = json.load(config_file)
     else:
       self._config = {
@@ -22,11 +24,11 @@ class Configuration(object):
             'command_prefix': '@',
             'channels': ['#nerdism'],
             'database': 'default',
-          }
-        }
+          },
+        },
         'databases': {
           'default': ['sqlite3', 'db.sqlite3'],
-        }
+        },
       }
 
   def save(self):

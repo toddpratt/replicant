@@ -25,7 +25,9 @@ class BotProtocol(irc.IRCClient):
     else:
       respond = self.respond_on_channel
 
-    request = self.factory.request_factory(fulluser, channel, msg, respond)
+    request = self.factory.request_factory(
+        fulluser, channel, msg, respond, self)
+
     if msg[0] == self.factory.prefix:
       self.factory.handler.handle(request)
     else:

@@ -1,21 +1,22 @@
 from twisted.enterprise import adbapi 
 from twisted.internet import reactor
 
-import os
-
+import command
 import config
 import factory
 import proto
 import request
 import userdb
+import cmdbase
 
 if __name__ == '__main__':
   conf = config.Configuration('bot.conf')
+  conf.load()
   databases = {}
   servers = {}
   lines = []
 
-  for db_name, db_config in conf['databases']:
+  for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
 
   for server, server_config in conf['servers'].iteritems():
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     f.users = userdb.UserDB(f.db)
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
-    f.handler = command.CommandHandler(f.db, f.users, lines)
-    reactor.connectTCP(f.irc_host, f.irc_port, f, conf)
+    f.handler = command.CommandHandler(f.db, f.users, lines, conf)
+    reactor.connectTCP(f.irc_host, f.irc_port, f)
 
   reactor.run()

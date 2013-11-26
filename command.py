@@ -1,17 +1,36 @@
 class CommandHandler(object):
 
+  commands = {}
+  @classmethod
+  def register(cls, command, handler):
+    cls.commands[command] = handler
+
   def __init__(self, db, users, lines, conf):
     self.db = db
     self.users = users
     self.lines = lines
+    self.conf = conf
+    self.results = []
 
   def handle(self, request):
     try:
-      function_name = 'do_' + request.args[0][1:]
+      command_name = request.args[0][1:]
+      function_name = 'do_' + command_name
     except ValueError:
       pass
     else:
-      getattr(self, function_name, lambda _: None)(request)
+      request.db = self.db
+      request.users = self.users
+      request.lines = self.lines
+      request.conf = self.conf
+      request.results = self.results
+      if command_name in self.commands:
+        self.commands[command_name].handle(request)
+      else:
+        getattr(self, function_name, lambda _: None)(request)
+
+  def do_reg(self, request):
+    request.respond('registered: ' + ', '.join(self.commands))
 
   def do_last(self, request):
     if request.account in self.users:
@@ -28,12 +47,6 @@ class CommandHandler(object):
 
   def reportLast(self, result, request):
     request.respond('%s %s %s "%s"' % result[0])
-
-  def do_ping(self, request):
-    if request.account in self.users:
-      request.respond('I am your servant.')
-    else:
-      request.respond('pong')
 
   def reportError(self, failure, request):
     request.respond('error: %s' % failure.getErrorMessage())
