@@ -7,7 +7,6 @@ import factory
 import proto
 import request
 import userdb
-import cmdbase
 
 if __name__ == '__main__':
   conf = config.Configuration('bot.conf')
