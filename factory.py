@@ -20,6 +20,6 @@ class BotFactory(protocol.ClientFactory):
     print failure.getErrorMessage()
     if self.reconnect is None:
       self.reconnect = 0
-    elif self.reconnect < 20:
-      self.reconnect += 5
+    elif self.reconnect < 30:
+      self.reconnect += 1
     reactor.callLater(self.reconnect, connector.connect)
