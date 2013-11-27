@@ -1,15 +1,17 @@
 import command
 
-import cmdbase
+import cmdconfig
 import cmdgrep
 import cmdping
 import cmdquery
+import cmdresults
 
 modules = [
-    cmdbase,
+    cmdconfig,
     cmdgrep,
     cmdping,
-    cmdquery
+    cmdquery,
+    cmdresults,
 ]
 
 def register_commands():

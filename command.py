@@ -1,7 +1,6 @@
 import cmdregister
 
 class CommandHandler(object):
-
   commands = {}
   @classmethod
   def register(cls, command, handler):
@@ -41,8 +40,9 @@ class CommandHandler(object):
       self.say(channel, message)
 
   def do_reload(self, request):
-    reload(cmdregister)
-    cmdregister.reload_commands()
-    request.respond('reloaded')
+    if request.account in self.users:
+      reload(cmdregister)
+      cmdregister.reload_commands()
+      request.respond('reloaded')
 
 cmdregister.register_commands()

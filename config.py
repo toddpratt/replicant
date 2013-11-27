@@ -37,3 +37,14 @@ class Configuration(object):
 
   def __getitem__(self, name):
     return self._config[name]
+
+def load_history():
+  if os.path.isfile('history'):
+    with open('history') as f:
+      return [l.strip() for l in f]
+  else:
+    return []
+
+def save_history(lines):
+  with open('history', 'w') as f:
+    f.writelines(l + '\n' for l in lines)

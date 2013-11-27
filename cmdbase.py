@@ -38,7 +38,3 @@ class DatabaseCommand(BaseAdminCommand):
 
   def report_error(self, failure, request):
     request.respond('error: %s' % failure.getErrorMessage())
-
-def register_commands():
-  command.CommandHandler.register(
-      'count', DatabaseCommand('SELECT COUNT(*) FROM lasts'))
