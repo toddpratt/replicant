@@ -2,6 +2,7 @@ import re
 
 import cmdbase
 import command
+import web
 
 class GrepCommand(cmdbase.BaseAdminCommand):
 
@@ -11,8 +12,9 @@ class GrepCommand(cmdbase.BaseAdminCommand):
     for line in request.lines:
       if any(p.search(line) for p in regexes):
         result.append(line)
-    request.results.append(result)
-    request.respond('%d matches' % len(result))
+    key = request.results.append(result)
+    request.respond('%d matches see results at: %s' %
+        (len(result), web.get_url(key)))
 
 def register_commands():
   command.CommandHandler.register('grep', GrepCommand())

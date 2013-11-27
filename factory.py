@@ -12,8 +12,6 @@ class BotFactory(protocol.ClientFactory):
     proto.realname = self.realname
     proto.password = self.password
     proto.username = self.nickname
-    proto.last_result = tuple()
-    proto.iter_result = iter(tuple())
     return self.ircbot
 
   def clientConnectionLost(self, connector, failure):

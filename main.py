@@ -9,11 +9,13 @@ import factory
 import proto
 import request
 import userdb
+import web
+import results
 
 def to_utf8(s):
   if isinstance(s, unicode):
     return s.encode('utf-8')
-  return s
+  return s 
 
 if __name__ == '__main__':
   conf = config.Configuration('bot.conf')
@@ -21,6 +23,7 @@ if __name__ == '__main__':
   databases = {}
   servers = {}
   lines = config.load_history()
+  result_sets = results.Results()
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
@@ -43,9 +46,10 @@ if __name__ == '__main__':
     f.users = userdb.UserDB(f.db)
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
-    f.handler = command.CommandHandler(f.db, f.users, lines, conf)
+    f.handler = command.CommandHandler(f.db, f.users, lines, conf, result_sets)
     reactor.connectTCP(f.irc_host, f.irc_port, f)
 
+  web.start_web(result_sets)
   reactor.run()
 
   config.save_history(lines)

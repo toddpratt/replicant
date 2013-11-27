@@ -1,4 +1,5 @@
 import command
+import web
 
 class BaseCommand(object):
 
@@ -33,8 +34,9 @@ class DatabaseCommand(BaseAdminCommand):
     d.addErrback(self.report_error, request)
 
   def report_success(self, result, request):
-    request.results.append(result)
-    request.respond('OK: rows=%d' % len(result))
+    key = request.results.append(result)
+    request.respond('OK: rows=%d results at %s' %
+        (len(result), web.get_url(key)))
 
   def report_error(self, failure, request):
     request.respond('error: %s' % failure.getErrorMessage())

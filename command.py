@@ -6,12 +6,12 @@ class CommandHandler(object):
   def register(cls, command, handler):
     cls.commands[command] = handler
 
-  def __init__(self, db, users, lines, conf):
+  def __init__(self, db, users, lines, conf, results):
     self.db = db
     self.users = users
     self.lines = lines
     self.conf = conf
-    self.results = []
+    self.results = results
 
   def handle(self, request):
     try:
