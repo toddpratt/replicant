@@ -10,7 +10,7 @@ class ResultsResource(resource.Resource):
 
   def getChild(self, path, request):
     lines = self.results[path]
-    return TextResource('\n'.join(lines))
+    return TextResource('\n'.join(str(l) for l in lines))
 
   def render_GET(self, request):
     request.setHeader('content-type', 'text/plain')
@@ -28,7 +28,7 @@ class TextResource(resource.Resource):
 def get_url(name):
   return 'http://gopher.strangled.net:8000/results/%s' % name
 
-def start_web(results):
+def start(results):
   root = resource.Resource()
   root.putChild('results', ResultsResource(results))
   site = server.Site(root)

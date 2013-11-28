@@ -3,8 +3,6 @@ from twisted.internet import reactor
 
 class BotFactory(protocol.ClientFactory):
 
-  reconnect = None
-
   def buildProtocol(self, addr):
     self.ircbot = proto = self.protocol()
     proto.factory = self
@@ -16,8 +14,4 @@ class BotFactory(protocol.ClientFactory):
 
   def clientConnectionLost(self, connector, failure):
     print failure.getErrorMessage()
-    if self.reconnect is None:
-      self.reconnect = 0
-    elif self.reconnect < 30:
-      self.reconnect += 1
-    reactor.callLater(self.reconnect, connector.connect)
+    reactor.callLater(10, connector.connect)

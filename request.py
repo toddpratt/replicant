@@ -26,7 +26,3 @@ class Request(object):
   @property
   def account(self):
     return self.fulluser.split('@', 1)[1]
-
-  def __str__(self):
-    return '<Request fulluser="%s" channel="%s" message="%s">' % (
-        self.fulluser, self.channel, self.message)

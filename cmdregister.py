@@ -2,6 +2,7 @@ import command
 
 import cmdconfig
 import cmdgrep
+import cmdirc
 import cmdping
 import cmdquery
 import cmdresults
@@ -9,6 +10,7 @@ import cmdresults
 modules = [
     cmdconfig,
     cmdgrep,
+    cmdirc,
     cmdping,
     cmdquery,
     cmdresults,
