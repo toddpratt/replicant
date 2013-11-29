@@ -1,39 +1,33 @@
 import cmdbase
 import command
 
-class BaseBosslikeCommand(cmdbase.DatabaseCommand):
+class BossCommand(cmdbase.DatabaseCommand):
 
   def __init__(self):
     pass
 
-  def runQuery(self, request, query, *args):
-    d = request.db.runQuery(query, *args)
-    d.addCallback(self.report_success, request)
+  def runQuery(self, request, query, report_success=None, args=tuple()):
+    if report_success is None:
+      report_success = self.report_success
+    d = request.db.runQuery(query, args)
+    d.addCallback(report_success, request)
     d.addErrback(self.report_error, request)
 
-class AddBosslikeCommand(BaseBosslikeCommand):
+  def report_random(self, result, request):
+    phrase = result[0][0]
+    if 'like a boss' not in phrase:
+      phrase = phrase + '... like a boss!!!'
+    request.proto.say(request.channel, phrase.encode('utf-8'))
 
   def handle(self, request):
-    phrase = request.message.split(None, 1)[1]
-    query = 'INSERT INTO bosslike (phrase) VALUES (?)'
-    self.runQuery(request, query, (phrase, ))
-
-class BossRandomCommand(BaseBosslikeCommand):
- 
-  def handle(self, request):
-    query = 'SELECT phrase FROM bosslike ORDER BY RANDOM() LIMIT 1'
-    self.runQuery(request, query)
-
-  def report_success(self, result, request):
-    request.respond(result[0][0].encode('utf-8') + '... like a boss!!!')
-
+    args = request.message.split(None, 1)
+    print args
+    if len(args) == 1:
+      query = 'SELECT phrase FROM bosslike ORDER BY RANDOM() LIMIT 1'
+      self.runQuery(request, query, report_success=self.report_random)
+    elif len(args) == 2:
+      query = 'INSERT INTO bosslike (phrase) VALUES (?)'
+      self.runQuery(request, query, args=(args[1].encode('utf-8'), ))
 
 def register_commands():
-  command.CommandHandler.register(
-      'bosslike', cmdbase.DatabaseCommand('SELECT phrase FROM bosslike'))
-
-  command.CommandHandler.register('addbosslike', AddBosslikeCommand())
-
-  boss_command = BossRandomCommand()
-  command.CommandHandler.register('bossrandom', boss_command)
-  command.CommandHandler.register('boss', boss_command)
+  command.CommandHandler.register('boss', BossCommand())

@@ -41,8 +41,9 @@ class DatabaseCommand(BaseAdminCommand):
 
   def report_success(self, result, request):
     key = request.results.append(result)
-    request.respond('OK: rows=%d results at %s' %
-        (len(result), web.get_url(key)))
+    if result:
+      request.respond('OK: rows=%d results at %s' %
+          (len(result), web.get_url(key)))
 
   def report_error(self, failure, request):
     request.respond('error: %s' % failure.getErrorMessage())
