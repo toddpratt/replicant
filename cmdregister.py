@@ -1,5 +1,7 @@
 import command
 
+import cmdbase
+import cmdbosslike
 import cmdconfig
 import cmdgrep
 import cmdirc
@@ -8,6 +10,7 @@ import cmdquery
 import cmdresults
 
 modules = [
+    cmdbosslike,
     cmdconfig,
     cmdgrep,
     cmdirc,
@@ -21,6 +24,7 @@ def register_commands():
     module.register_commands()
 
 def reload_commands():
+  reload(cmdbase)
   for module in modules:
     reload(module)
   register_commands()

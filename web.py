@@ -26,7 +26,7 @@ class TextResource(resource.Resource):
     return self.text
 
 def get_url(name):
-  return 'http://gopher.strangled.net:8000/results/%s' % name
+  return 'http://162.243.130.178:8000/results/%s' % name
 
 def start(results):
   root = resource.Resource()

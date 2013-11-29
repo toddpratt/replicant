@@ -28,7 +28,13 @@ class DatabaseCommand(BaseAdminCommand):
   def __init__(self, query):
     self.query = query
 
+  def handle_admin(self, request):
+    self.handle_query(request)
+
   def handle_user(self, request):
+    self.handle_query(request)
+
+  def handle_query(self, request):
     d = request.db.runQuery(self.query)
     d.addCallback(self.report_success, request)
     d.addErrback(self.report_error, request)
