@@ -32,6 +32,7 @@ class WriteHistoryCommand(cmdbase.BaseAdminCommand):
   def handle_admin(self, request):
     reload(config)
     config.save_history(request.lines)
+    request.respond('mkay')
 
 def register_commands():
   command.CommandHandler.register('rc', RCountCommand())

@@ -34,8 +34,8 @@ class DatabaseCommand(BaseAdminCommand):
   def handle_user(self, request):
     self.handle_query(request)
 
-  def handle_query(self, request):
-    d = request.db.runQuery(self.query)
+  def handle_query(self, request, args=tuple()):
+    d = request.db.runQuery(self.query, args)
     d.addCallback(self.report_success, request)
     d.addErrback(self.report_error, request)
 

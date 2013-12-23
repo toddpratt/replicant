@@ -1,9 +1,11 @@
-import cmdregister
+import commandreg
 
 class CommandHandler(object):
   commands = {}
   @classmethod
   def register(cls, command, handler):
+    if command in cls.commands:
+      raise ValueError('%s: command already registered.')
     cls.commands[command] = handler
 
   def __init__(self, db, users, lines, conf, results):
@@ -34,15 +36,10 @@ class CommandHandler(object):
     request.respond('base commands: help, say, reload')
     request.respond('registered commands: ' + ', '.join(self.commands))
 
-  def do_say(self, request):
-    if request.account in self.users:
-      channel, message = request.message.split(None, 1)
-      self.say(channel, message)
-
   def do_reload(self, request):
     if request.account in self.users:
-      reload(cmdregister)
-      cmdregister.reload_commands()
+      reload(commandreg)
+      commandreg.reload_commands()
       request.respond('reloaded')
-
-cmdregister.register_commands()
+    else:
+      request.respond('You ain\'t no admin I ever heard of.')

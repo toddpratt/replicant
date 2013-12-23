@@ -1,5 +1,6 @@
 from twisted.words.protocols import irc
 
+import jellyfish
 import re
 
 class BotProtocol(irc.IRCClient):
@@ -31,6 +32,9 @@ class BotProtocol(irc.IRCClient):
     if msg[0] == self.factory.prefix:
       self.factory.handler.handle(request)
     else:
+      self.factory.db.runQuery(
+          'INSERT OR REPLACE INTO lasts (updated, user, channel, message) '
+          'VALUES (datetime(), ?, ?, ?)', (fulluser, channel, msg))
       self.factory.db.runQuery(
           'INSERT OR REPLACE INTO lasts (updated, user, channel, message) '
           'VALUES (datetime(), ?, ?, ?)', (fulluser, channel, msg))

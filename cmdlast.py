@@ -1,3 +1,7 @@
+import cmdbase
+import command
+
+class LastCommand(cmdbase.DatabaseCommand):
 
   def do_last(self, request):
     if request.account in self.users:
@@ -14,3 +18,7 @@
 
   def reportLast(self, result, request):
     request.respond('%s %s %s "%s"' % result[0])
+
+def register_commands():
+  pass
+  #command.CommandHandler.register('boss', BossCommand())
