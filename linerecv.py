@@ -32,13 +32,13 @@ class TcpInterface(basic.LineReceiver):
         return
 
     proto = self.factory.servers[self.server].ircbot
-    request = self.factory.request_factory(
+    local_request = self.factory.request_factory(
         'localuser!~localuser@localuser.localhost',
         'rawtcp', line, self.respond, proto)
 
-    self.factory.handler.handle(request)
+    self.factory.handler.handle(local_request)
 
-  def respond(self, request, message):
+  def respond(self, local_request, message):
     self.sendLine(message)
 
 def start(handler, servers):
