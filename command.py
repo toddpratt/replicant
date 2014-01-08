@@ -4,8 +4,6 @@ class CommandHandler(object):
   commands = {}
   @classmethod
   def register(cls, command, handler):
-    if command in cls.commands:
-      raise ValueError('%s: command already registered.')
     cls.commands[command] = handler
 
   def __init__(self, db, users, lines, conf, results):
