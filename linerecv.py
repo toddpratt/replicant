@@ -47,4 +47,4 @@ def start(handler, servers):
   f.request_factory = request.Request
   f.handler = handler
   f.servers = servers
-  reactor.listenTCP(8021, f)
+  reactor.listenTCP(8021, f, interface='127.0.0.1')
