@@ -1,7 +1,7 @@
-import cmdbase
+import plugin_base
 import command
 
-class IrcCommand(cmdbase.BaseAdminCommand):
+class IrcCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     method_name = request.args[1]
@@ -13,12 +13,12 @@ class IrcCommand(cmdbase.BaseAdminCommand):
     else:
       request.respond('%s: no method' % method_name)
 
-class OpCommand(cmdbase.BaseAdminCommand):
+class OpCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     request.proto.mode(request.channel, True, 'o', user=request.args[1])
 
-class OpmeCommand(cmdbase.BaseAdminCommand):
+class OpmeCommand(plugin_base.BaseAdminCommand):
 
   def handle_user(self, request):
     query = 'SELECT COUNT(*) FROM ops WHERE channel = ? AND account = ?'
@@ -39,7 +39,7 @@ class OpmeCommand(cmdbase.BaseAdminCommand):
   def handle_admin(self, request):
     self.handle_user(request)
 
-class OpsCommand(cmdbase.BaseCommand):
+class OpsCommand(plugin_base.BaseCommand):
 
   def handle_user(self, request):
     query = 'SELECT account FROM ops WHERE channel = ?'

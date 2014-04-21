@@ -1,11 +1,11 @@
-import cmdbase
+import plugin_base
 import command
 
-class QueryCommand(cmdbase.BaseAdminCommand):
+class QueryCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     query = request.message.split(None, 1)[1]
-    command = cmdbase.DatabaseCommand(query)
+    command = plugin_base.DatabaseCommand(query)
     command.handle_user(request)
 
 def register():

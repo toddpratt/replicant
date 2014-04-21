@@ -1,4 +1,4 @@
-import cmdbase
+import plugin_base
 import command
 import config
 
@@ -13,7 +13,7 @@ class ResultState(object):
 
 result_state = ResultState()
 
-class RCountCommand(cmdbase.BaseAdminCommand):
+class RCountCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     request.respond('result set count: %d' % len(request.results))
@@ -27,7 +27,7 @@ class RCountCommand(cmdbase.BaseAdminCommand):
     if invalids:
       request.respond('invalid keys: ' + ', '.join(invalids))
 
-class WriteHistoryCommand(cmdbase.BaseAdminCommand):
+class WriteHistoryCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     reload(config)

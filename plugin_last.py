@@ -1,7 +1,7 @@
-import cmdbase
+import plugin_base
 import command
 
-class LastCommand(cmdbase.DatabaseCommand):
+class LastCommand(plugin_base.DatabaseCommand):
 
   def do_last(self, request):
     if request.account in self.users:

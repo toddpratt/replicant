@@ -4,7 +4,7 @@ from twisted.internet import reactor
 import os
 
 import command
-import commandreg
+import pluginreg
 import config
 import factory
 import linerecv
@@ -26,7 +26,7 @@ if __name__ == '__main__':
   servers = {}
   lines = config.load_history()
   result_sets = results.Results()
-  commandreg.reload_commands()
+  pluginreg.reload_commands()
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)

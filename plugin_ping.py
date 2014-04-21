@@ -1,10 +1,10 @@
-import cmdbase
+import plugin_base
 import command
 
-class PingCommand(cmdbase.BaseCommand):
+class PingCommand(plugin_base.BaseCommand):
 
   def handle_admin(self, request):
-    request.respond('I am your servent.')
+    request.respond('I am your servant.')
 
   def handle_user(self, request):
     request.respond('pong.')

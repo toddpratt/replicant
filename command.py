@@ -1,4 +1,4 @@
-import commandreg
+import pluginreg
 
 class CommandHandler(object):
   commands = {}
@@ -14,6 +14,7 @@ class CommandHandler(object):
     self.results = results
 
   def handle(self, request):
+    print request
     try:
       command_name = request.args[0][1:]
       function_name = 'do_' + command_name
@@ -36,8 +37,8 @@ class CommandHandler(object):
 
   def do_reload(self, request):
     if request.account in self.users:
-      reload(commandreg)
-      commandreg.reload_commands()
+      reload(pluginreg)
+      pluginreg.reload_commands()
       request.respond('reloaded')
     else:
       request.respond('You ain\'t no admin I ever heard of.')

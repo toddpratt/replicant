@@ -1,7 +1,7 @@
-import cmdbase
+import plugin_base
 import command
 
-class BossCommand(cmdbase.DatabaseCommand):
+class BossCommand(plugin_base.DatabaseCommand):
 
   def __init__(self):
     pass

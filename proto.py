@@ -1,14 +1,11 @@
 from twisted.words.protocols import irc
 
-import jellyfish
-import re
-
 class BotProtocol(irc.IRCClient):
+  plugins = []
 
-  def lineReceived(self, line):
-    print line
-    irc.IRCClient.lineReceived(self, line)
-    self.factory.lines.append(line)
+  @classmethod
+  def register_plugin(cls, plugin):
+    cls.plugins.append(plugin())
 
   def signedOn(self):
     for channel in self.factory.channels:
@@ -21,26 +18,35 @@ class BotProtocol(irc.IRCClient):
     self.msg(request.nick, msg)
 
   def privmsg(self, fulluser, channel, msg):
-    if channel == self.nickname:
-      respond = self.respond_to_user
-    else:
-      respond = self.respond_on_channel
-
-    request = self.factory.request_factory(
-        fulluser, channel, msg, respond, self)
-
+    print 'privmsg called:', fulluser, channel, msg
     if msg[0] == self.factory.prefix:
+      if channel == self.nickname:
+        respond = self.respond_to_user
+      else:
+        respond = self.respond_on_channel
+      request = self.factory.request_factory(
+          fulluser, channel, msg, respond, self)
       self.factory.handler.handle(request)
-    else:
-      self.factory.db.runQuery(
-          'INSERT OR REPLACE INTO lasts (updated, user, channel, message) '
-          'VALUES (datetime(), ?, ?, ?)', (fulluser, channel, msg))
-      self.factory.db.runQuery(
-          'INSERT OR REPLACE INTO lasts (updated, user, channel, message) '
-          'VALUES (datetime(), ?, ?, ?)', (fulluser, channel, msg))
 
-  def modeChanged(self, *args):
-    self.log(args)
+    self.dispatch(self.get_methods('privmsg'), fulluser, channel, msg)
 
-  def log(self, message):
-    print message
+  def dispatch(self, methods, *args, **kwargs):
+    print 'dispatch:', methods, args, kwargs
+    for method in methods:
+      method(*args, **kwargs)
+
+  def get_methods(self, name):
+    methods = []
+    for plugin in self.plugins:
+      obj = getattr(plugin, name, None)
+      if callable(obj):
+        methods.append(obj)
+    return methods
+
+  def __getattr__(self, name):
+    methods = self.get_methods(name)
+    if not methods:
+      raise AttributeError('%s: no such attribute' % name)
+    def dispatch(*args, **kwargs):
+      self.dispatch(methods, *args, **kwargs)
+    return dispatch

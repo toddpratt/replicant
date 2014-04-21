@@ -1,10 +1,10 @@
 import re
 
-import cmdbase
+import plugin_base
 import command
 import web
 
-class GrepCommand(cmdbase.BaseAdminCommand):
+class GrepCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     regexes = [re.compile(p) for p in request.args[1:]]

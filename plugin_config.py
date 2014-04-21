@@ -1,15 +1,15 @@
 import json
 
-import cmdbase
+import plugin_base
 import command
 
-class SaveCommand(cmdbase.BaseAdminCommand):
+class SaveCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     request.conf.save()
     request.respond('OK')
 
-class ChangeCommand(cmdbase.BaseAdminCommand):
+class ChangeCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
     _, key, data = request.message.split(None, 2)
