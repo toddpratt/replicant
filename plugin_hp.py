@@ -3,8 +3,9 @@ import random
 
 from twisted.internet import reactor
 
-import plugin_base
 import command
+import looping
+import plugin_base
 
 
 class Player(object):
@@ -25,6 +26,8 @@ class Player(object):
 
     if hit == 0:
       request.respond('you missed')
+    elif hit == -1:
+      request.respond('you struck the lifeless corpse of %s' % strikee.nick)
     elif strikee.hp < 1:
       self.hp += random.randint(25, 50)
       request.respond('you killed %s, your hitpoints have increased to %d' %
@@ -38,7 +41,7 @@ class Player(object):
 
   def take_damage(self, points, striker, request):
     if self.hp < 1:
-      return 0
+      return -1
     self.hp -= points
     return points
 
@@ -61,10 +64,15 @@ class God(Player):
 
 class NPC(Player):
 
+  def __init__(self, *args, **kwargs):
+    super(NPC, self).__init__(*args, **kwargs)
+    npcs.append(self)
+
   def take_damage(self, points, striker, request):
     new_request = request.for_reply('%s!NPC@NPC' % self.nick)
-    for i in range(1, random.randint(3, 7)):
-      reactor.callLater(i, self.strike, striker, new_request)
+    for i, p in enumerate((0.7, 0.5, 0.1)):
+      if random.random() < p:
+        reactor.callLater(i*2, self.strike, striker, new_request)
     return super(NPC, self).take_damage(points, striker, request)
 
 
@@ -129,7 +137,7 @@ class HealCommand(BaseHpCommand):
 
   def handle_user(self, request):
     target = self.get_target(request)
-    if result:
+    if target:
       target.hp += random.randint(25, 75)
 
 
@@ -155,14 +163,52 @@ class SummonCommand(BaseHpCommand):
                             player.last_enemy, new_request)
 
 
-users = {}
+class ShazamCommand(plugin_base.BaseCommand):
 
-God('devonian.users.undernet.org', 'devonian', 1)
-God('sucralose.users.undernet.org', 'sucralose', 300)
+  def handle_user(self, request):
+    name = 'npc-attack'
+    if len(request.args) == 1:
+      looping.register(name, maybe_attack, 10, True, request)
+      request.respond('started')
+    elif request.args[1] == 'stop':
+      looping.stop(name)
+      request.respond('stopped')
+    elif request.args[1] == 'invoke':
+      attack(request)
+      request.respond('invoked')
+    elif request.args[1] == 'stat':
+      if looping.is_running(name):
+        request.respond('running')
+      else:
+        request.respond('not running')
+
+
+users = {}
+npcs = []
+
 NPC('NPC', 'gnome', 300)
 NPC('NPC', 'elf', 300)
 NPC('NPC', 'wizard', 300)
+NPC('NPC', 'orc', 300)
+NPC('NPC', 'dragon', 900)
+NPC('NPC', 'slime', 100)
 NPC('NPC', 'gopher', 300)
+NPC('NPC', 'ghost', 300)
+NPC('NPC', 'anteater', 300)
+NPC('NPC', 'sloth', 300)
+
+
+def maybe_attack(request):
+  if random.random() < 0.1:
+    attack(request)
+
+def attack(request):
+  striker = random.choice(npcs)
+  request = request.for_reply('%s!@' % striker.nick)
+  targets = set(users.itervalues())
+  targets.remove(striker)
+  target = random.choice(list(targets))
+  striker.strike(target, request)
 
 
 def register():
@@ -171,3 +217,4 @@ def register():
   command.CommandHandler.register('strike', StrikeCommand())
   command.CommandHandler.register('heal', HealCommand())
   command.CommandHandler.register('summon', SummonCommand())
+  command.CommandHandler.register('shazam', ShazamCommand())
