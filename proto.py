@@ -28,25 +28,19 @@ class BotProtocol(irc.IRCClient):
           fulluser, channel, msg, respond, self)
       self.factory.handler.handle(request)
 
-    self.dispatch(self.get_methods('privmsg'), fulluser, channel, msg)
+    #self.dispatch(self.get_methods('privmsg'), fulluser, channel, msg)
 
   def dispatch(self, methods, *args, **kwargs):
     print 'dispatch:', methods, args, kwargs
     for method in methods:
       method(*args, **kwargs)
 
-  def get_methods(self, name):
-    methods = []
-    for plugin in self.plugins:
-      obj = getattr(plugin, name, None)
-      if callable(obj):
-        methods.append(obj)
-    return methods
+  def call_plugins(name):
+    def wrapper(*args, **kwargs):
+      for plugin in BotProtocol.plugins:
+        method = getattr(plugin, name)
+        if method:
+          method(*args, **kwargs)
+    return wrapper
 
-  def __getattr__(self, name):
-    methods = self.get_methods(name)
-    if not methods:
-      raise AttributeError('%s: no such attribute' % name)
-    def dispatch(*args, **kwargs):
-      self.dispatch(methods, *args, **kwargs)
-    return dispatch
+  irc_JOIN = call_plugins('irc_JOIN')

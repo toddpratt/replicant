@@ -24,6 +24,10 @@ class Request(object):
     return self.fulluser.split('!')[0]
 
   @property
+  def user(self):
+    return self.fulluser.split('!')[1]
+
+  @property
   def account(self):
     return self.fulluser.split('@', 1)[1]
 
