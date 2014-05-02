@@ -35,6 +35,13 @@ class Configuration(object):
     with open(self.filename, 'w') as config_file:
       json.dump(self._config, config_file, indent=2)
 
+  def get_parent(self, path):
+    parts = path.split('.')
+    target = self
+    for part in parts[:-1]:
+      target = target[part]
+    return parts[-1], target
+
   def __getitem__(self, name):
     return self._config[name]
 
