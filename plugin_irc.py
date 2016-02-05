@@ -77,6 +77,11 @@ class OpsCommand(plugin_base.BaseCommand):
     d = request.db.runQuery(query, (request.channel, ))
     d.addCallback(success, request)
 
+class InviteCommand(plugin_base.BaseCommand):
+
+  def handle_user(self, request):
+    request.proto.invite(request.nick, request.args[1])
+
 def register():
   command.CommandHandler.register('auth', AuthCommand())
   command.CommandHandler.register('irc', IrcCommand())
