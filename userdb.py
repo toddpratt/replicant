@@ -4,6 +4,10 @@ class UserDB(object):
     self.db = db
     self.ready = False
     self.load_from_table()
+    self.temporary_users = set()
+
+  def append(self, account):
+    self.temporary_users.add(account)
 
   def add(self, account):
     self.users.add(account)
@@ -23,6 +27,8 @@ class UserDB(object):
     self.ready = True
 
   def __contains__(self, item):
+    if item in self.temporary_users:
+      return True
     if self.ready:
       return item in self.users
     else:

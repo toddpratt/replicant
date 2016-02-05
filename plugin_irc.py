@@ -1,6 +1,30 @@
 import plugin_base
 import command
 
+import hashlib
+import random
+import sys
+
+challenges = {}
+password = "hard4u2Ges"
+
+class AuthCommand(plugin_base.BaseCommand):
+
+  def handle_user(self, request):
+    value = challenges.get(request.account)
+    if value and len(request.args) == 2 and value == request.args[1]:
+      request.users.append(request.account)
+      request.respond("ok")
+    elif value:
+      del challenges[request.account]
+      request.respond("challenge aborted.")
+    else:
+      md5 = hashlib.md5(
+              str(random.randint(sys.maxint/2, sys.maxint))).hexdigest()
+      challenges[request.account] = hashlib.md5(
+              password + md5 + '\n').hexdigest()
+      request.respond(md5)
+
 class IrcCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
@@ -54,6 +78,7 @@ class OpsCommand(plugin_base.BaseCommand):
     d.addCallback(success, request)
 
 def register():
+  command.CommandHandler.register('auth', AuthCommand())
   command.CommandHandler.register('irc', IrcCommand())
   command.CommandHandler.register('op', OpCommand())
   command.CommandHandler.register('ops', OpsCommand())

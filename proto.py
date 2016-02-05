@@ -3,6 +3,10 @@ from twisted.words.protocols import irc
 class BotProtocol(irc.IRCClient):
   plugins = []
 
+  def lineReceived(self, line):
+    irc.IRCClient.lineReceived(self, line)
+    print line
+
   @classmethod
   def register_plugin(cls, plugin):
     cls.plugins.append(plugin())
