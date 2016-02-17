@@ -33,13 +33,22 @@ class Puzzle(object):
     return solution
 
   def guess(self, letter):
+    if letter in self.guessed:
+      return False
     self.guessed += letter[0].upper()
+    return True
 
 
 class WOFCommand(plugin_base.DatabaseCommand):
 
   def __init__(self):
     self.query = 'SELECT phrase FROM bosslike ORDER BY RANDOM() LIMIT 1'
+
+  def handle(self, request):
+    if request.channel in games:
+      request.respond("A game is already in progress.")
+    else:
+      super(WOFCommand, self).handle(request)
 
   def report_success(self, result, request):
     puzzle = Puzzle(result[0][0])
@@ -50,23 +59,37 @@ class WOFCommand(plugin_base.DatabaseCommand):
   def report_error(self, failure, request):
     request.respond('error: %s' % failure.getErrorMessage())
 
-class GiveMeACommand(plugin_base.BaseCommand):
+
+class PuzzleCommand(plugin_base.BaseCommand):
 
   def handle_user(self, request):
-    puzzle = games[request.channel]
-    puzzle.guess(request.args[1][0].upper())
-    request.respond(puzzle.solution())
+    try:
+      puzzle = games[request.channel]
+    except KeyError:
+      request.respond("There's no active game.")
+    else:
+      self.handle_player(request, puzzle)
 
 
-class SolveCommand(plugin_base.BaseCommand):
+class GiveMeACommand(PuzzleCommand):
 
-  def handle_user(self, request):
-    puzzle = games[request.channel]
+  def handle_player(self, request, puzzle):
+    letter = request.args[1][0].upper()
+    if puzzle.guess(letter):
+      request.respond(puzzle.solution())
+    else:
+      request.respond("Someone already guessed '%s'" % letter)
+
+
+class SolveCommand(PuzzleCommand):
+
+  def handle_player(self, request, puzzle):
     guess = request.args[1].upper()
     if puzzle.puzzle == guess:
       chan_scores = scores[request.channel]
       chan_scores[request.nick] += 1
       request.respond("You solved it!")
+      del games[request.channel]
       write_scores(request)
 
     else:
