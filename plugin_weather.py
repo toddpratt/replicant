@@ -10,9 +10,9 @@ class WeatherCommand(plugin_base.BaseCommand):
   def handle_user(self, request):
     config = request.conf['plugins']['weather']
     url = (
-        config["url"].encode("utf-8") +
+        config["url"] +
         "?zip=" + request.args[1] +
-        "&appid=" + config["key"].encode("utf-8") +
+        "&appid=" + config["key"] +
         "&units=imperial")
     d = client.getPage(url)
     d.addCallback(self.report_weather, request)
@@ -20,8 +20,8 @@ class WeatherCommand(plugin_base.BaseCommand):
 
   def report_weather(self, results, request):
     results = json.loads(results)
-    city = results["name"].encode("utf-8")
-    description = results["weather"][0]["description"].encode("utf-8")
+    city = results["name"]
+    description = results["weather"][0]["description"]
     temp = results["main"]["temp"]
     humidity = results["main"]["humidity"]
     request.respond("City: %(city)s: Temp: %(temp)sF "

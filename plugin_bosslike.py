@@ -17,7 +17,7 @@ class BossCommand(plugin_base.DatabaseCommand):
     phrase = result[0][0]
     if 'like a boss' not in phrase:
       phrase = phrase + '... like a boss!!!'
-    request.proto.say(request.channel, phrase.encode('utf-8'))
+    request.proto.say(request.channel, phrase)
 
   def handle(self, request):
     args = request.message.split(None, 1)
@@ -27,7 +27,7 @@ class BossCommand(plugin_base.DatabaseCommand):
       self.runQuery(request, query, report_success=self.report_random)
     elif len(args) == 2:
       query = 'INSERT INTO bosslike (phrase) VALUES (?)'
-      self.runQuery(request, query, args=(args[1].encode('utf-8'), ))
+      self.runQuery(request, query, args=(args[1], ))
 
 def register():
   command.CommandHandler.register('boss', BossCommand())

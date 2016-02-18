@@ -10,7 +10,7 @@ class Request(object):
     self.proto = proto
 
   def respond(self, message):
-    self._respond(self, message.encode('utf-8'))
+    self._respond(self, message)
 
   def say(self, channel, message):
     self.proto.say(channel, message)

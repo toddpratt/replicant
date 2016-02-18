@@ -3,6 +3,9 @@ from twisted.words.protocols import irc
 class BotProtocol(irc.IRCClient):
   plugins = []
 
+  def sendLine(self, line):
+    self.transport.write(line.encode('utf-8') + '\r\n')
+
   def lineReceived(self, line):
     irc.IRCClient.lineReceived(self, line)
     print line

@@ -14,11 +14,6 @@ import userdb
 import web
 import results
 
-def to_utf8(s):
-  if isinstance(s, unicode):
-    return s.encode('utf-8')
-  return s 
-
 if __name__ == '__main__':
   conf = config.Configuration('bot.conf')
   conf.load()
@@ -37,14 +32,14 @@ if __name__ == '__main__':
     servers[server] = f = factory.BotFactory()
     f.db = db
 
-    f.channels = [to_utf8(c) for c in server_config['channels']]
-    f.irc_host = to_utf8(server_config['host'])
-    f.irc_port = to_utf8(server_config['port'])
-    f.nickname = to_utf8(server_config['nickname'])
-    f.realname = to_utf8(server_config['realname'])
-    f.password = to_utf8(server_config['password'])
-    f.username = to_utf8(server_config['username'])
-    f.prefix = to_utf8(server_config['command_prefix'])
+    f.channels = [c for c in server_config['channels']]
+    f.irc_host = server_config['host']
+    f.irc_port = server_config['port']
+    f.nickname = server_config['nickname']
+    f.realname = server_config['realname']
+    f.password = server_config['password']
+    f.username = server_config['username']
+    f.prefix = server_config['command_prefix']
 
     f.conf = conf
     f.lines = lines

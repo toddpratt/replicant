@@ -22,7 +22,7 @@ class TcpInterface(basic.LineReceiver):
     elif (len(args) == 2 and args[0] == 'server'
           and args[1] in self.factory.servers):
       self.server = args[1]
-      self.sendLine(('OK: ' + self.server).encode('utf-8'))
+      self.sendLine(('OK: ' + self.server))
       return
     elif not self.server:
       if len(self.factory.servers) == 1:
