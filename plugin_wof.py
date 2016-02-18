@@ -46,7 +46,8 @@ class WOFCommand(plugin_base.DatabaseCommand):
 
   def handle(self, request):
     if request.channel in games:
-      request.respond("A game is already in progress.")
+      request.respond("(already in progress)")
+      request.respond(puzzle.solution())
     else:
       super(WOFCommand, self).handle(request)
 
