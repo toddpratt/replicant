@@ -11,6 +11,10 @@ class BotProtocol(irc.IRCClient):
     print line
 
   @classmethod
+  def reset_plugins(cls):
+    cls.plugins = []
+
+  @classmethod
   def register_plugin(cls, plugin):
     cls.plugins.append(plugin())
 
@@ -25,7 +29,6 @@ class BotProtocol(irc.IRCClient):
     self.msg(request.nick, msg)
 
   def privmsg(self, fulluser, channel, msg):
-    print 'privmsg called:', fulluser, channel, msg
     if msg[0] == self.factory.prefix:
       if channel == self.nickname:
         respond = self.respond_to_user
@@ -34,20 +37,16 @@ class BotProtocol(irc.IRCClient):
       request = self.factory.request_factory(
           fulluser, channel, msg, respond, self)
       self.factory.handler.handle(request)
-
-    #self.dispatch(self.get_methods('privmsg'), fulluser, channel, msg)
-
-  def dispatch(self, methods, *args, **kwargs):
-    print 'dispatch:', methods, args, kwargs
-    for method in methods:
-      method(*args, **kwargs)
+    self.private_message(fulluser, channel, msg)
 
   def call_plugins(name):
     def wrapper(*args, **kwargs):
       for plugin in BotProtocol.plugins:
-        method = getattr(plugin, name)
+        method = getattr(plugin, name, None)
         if method:
+          print args, kwargs
           method(*args, **kwargs)
     return wrapper
 
   irc_JOIN = call_plugins('irc_JOIN')
+  private_message = call_plugins('privmsg')

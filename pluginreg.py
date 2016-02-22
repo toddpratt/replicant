@@ -1,8 +1,10 @@
 import glob
 
 import command
+import proto
 
 def reload_commands():
+  proto.BotProtocol.reset_plugins()
   names = glob.glob('plugin_*.py')
   for name in names:
     print 'loading module', name

@@ -14,7 +14,7 @@ class Playlist(object):
       cb()
 
   def clear(self):
-    del self._pl[:]
+    self._pl.clear()
 
   def get(self):
     return json.dumps(tuple(self._pl))

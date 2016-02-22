@@ -1,9 +1,10 @@
-import plugin_base
 import command
-
 import json
+import plugin_base
 import urlparse
 import urllib2
+
+from twisted.web import client
 
 class PlaylistError(Exception):
   pass
@@ -47,12 +48,20 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
         raise PlaylistError("That video is already listed.")
 
       info_url = conf['info_url'] % {"key": conf['key'], "vid": vid}
-      info = json.load(urllib2.urlopen(info_url))
-      playlist.append({"user": request.nick, "vid": vid, "data": info})
-      request.respond(info["items"][0]["snippet"]["title"] + ": OK")
+      d = client.getPage(info_url.encode('utf-8'))
+      d.addCallback(self.video_info_success, request, vid)
+      d.addErrback(self.video_info_failure, request, vid)
     except PlaylistError as err:
       request.respond(err.args[0])
 
+  def video_info_success(self, info, request, vid):
+    info = json.loads(info)
+    playlist = request.proto.factory.youtube_playlist
+    playlist.append({"user": request.nick, "vid": vid, "data": info})
+    request.respond(info["items"][0]["snippet"]["title"] + ": OK")
+
+  def video_info_failure(self, failure, request, vid):
+    request.respond("Error: " + failure.getErrorMessage())
 
 def register():
   command.CommandHandler.register('pl', PlaylistCommand())
