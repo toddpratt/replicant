@@ -8,6 +8,7 @@ import pluginreg
 import config
 import factory
 import linerecv
+import playlist
 import proto
 import request
 import userdb
@@ -22,6 +23,7 @@ if __name__ == '__main__':
   lines = config.load_history()
   result_sets = results.Results()
   pluginreg.reload_commands()
+  yt_playlist = playlist.Playlist()
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
@@ -47,9 +49,10 @@ if __name__ == '__main__':
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
     f.handler = command.CommandHandler(f.db, f.users, lines, conf, result_sets)
+    f.youtube_playlist = yt_playlist
     reactor.connectTCP(f.irc_host, f.irc_port, f)
 
-  web.start(result_sets)
+  web.start(result_sets, yt_playlist)
   command_handler = command.CommandHandler(db, users, lines, conf, result_sets)
   linerecv.start(command_handler, servers)
   reactor.run()

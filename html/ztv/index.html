@@ -1,0 +1,95 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>ZebraTV</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js">
+    </script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js">    
+    </script>    
+    <script id="ytapi"></script>
+  </head>
+  <body>
+    <script>
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          //videoId: 'XGUTetiHcDM',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+      function onPlayerReady(event) {
+        //event.target.playVideo();
+      }
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.FINISHED) {
+        }
+      }
+      function stopVideo() {
+        //player.stopVideo();
+      }
+      function play_video(vid) {
+        player.loadVideoById(vid);
+      }
+      function check_for_new() {
+        $.ajax({
+          url: "/playlist_push",
+          dataType: "json",
+          success: function(data, textStatus) {
+            load_videos();
+            check_for_new();
+          },
+          failure: function(data, textStatus) {
+            check_for_new();
+          }
+        });
+      }
+      function load_videos() {
+        $.ajax({
+          url: "/playlist",
+          dataType: "json",
+          success: function(data, textStatus) {
+            $("#playlist").empty();
+            for(var i = 0; i < data.length; ++i) {
+              video = data[i];
+              var context = {
+                title: video.data.items[0].snippet.title,
+                vid: video.vid,
+                user: video.user,
+                img_src: video.data.items[0].snippet.thumbnails.default.url
+              };
+              var html = video_template(context);
+              $("#playlist").append(html);
+            }
+            check_for_new();
+          },
+          failure: function(data, textStatus) {
+            $("#playlist").text("oops.  something went wrong.");
+            check_for_new();
+          }
+        });
+      }
+      $(document).ready(function() {
+        var video_template_src = $("#playlist-video-template").html();
+        video_template = Handlebars.compile(video_template_src);
+        $("#ytapi").attr('src', "https://www.youtube.com/iframe_api");
+        load_videos();
+      });
+      var video_template;
+    </script>
+    <div style="float:right" id="playlist"></div>
+    <div id="player"></div>
+    <div style="display:none" id="playlist-video-template">
+      <a href="javascript:play_video('{{vid}}');">
+        <div>{{title}} </div>
+        <div><img src="{{img_src}}"></div>
+        <div><small>added by {{user}}</small></div>
+      </a>
+    </div>
+  </body>
+</html>
