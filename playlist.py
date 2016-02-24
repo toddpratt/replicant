@@ -5,19 +5,29 @@ import threading
 class Playlist(object):
 
   def __init__(self):
-    self._pl = collections.deque((), 10)
+    self._pl = []
     self._cbs = []
 
   def append(self, item):
-    self._pl.appendleft(item)
+    self._pl.append(item)
+    self.do_callbacks()
+
+  def do_callbacks(self):
     for cb in self._cbs:
       cb()
 
   def clear(self):
-    self._pl.clear()
+    del self._pl[:]
 
   def get(self):
-    return json.dumps(tuple(self._pl))
+    return json.dumps(self._pl, separators=(',', ':'))
+
+  def read(self, f):
+    self._pl = json.load(f)
+    self.do_callbacks()
+
+  def write(self, f):
+    json.dump(self._pl, f, indent=2, sort_keys=True)
 
   def addCallback(self, cb):
     self._cbs.append(cb)

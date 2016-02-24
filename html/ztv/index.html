@@ -37,14 +37,16 @@
         player.loadVideoById(vid);
       }
       function check_for_new() {
+        console.log("polling for new videos");
         $.ajax({
           url: "/playlist_push",
-          dataType: "json",
+          dataType: "text",
           success: function(data, textStatus) {
+            console.log("new videos!");
             load_videos();
-            check_for_new();
           },
-          failure: function(data, textStatus) {
+          complete: function() {
+            console.log("trying again...");
             check_for_new();
           }
         });
@@ -55,7 +57,7 @@
           dataType: "json",
           success: function(data, textStatus) {
             $("#playlist").empty();
-            for(var i = 0; i < data.length; ++i) {
+            for(var i = data.length - 1; i >= 0; --i) {
               video = data[i];
               var context = {
                 title: video.data.items[0].snippet.title,

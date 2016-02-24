@@ -34,7 +34,8 @@ class PlaylistPushResource(resource.Resource):
 
   def new_data_received(self):
     for request in self._requests:
-      request.finish()
+      if request.channel:
+        request.finish()
     self._requests = []
 
   def render_GET(self, request):

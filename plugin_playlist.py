@@ -17,6 +17,24 @@ class PlaylistClearCommand(plugin_base.BaseAdminCommand):
     request.respond("OK")
 
 
+class PlaylistSaveCommand(plugin_base.BaseAdminCommand):
+
+  def handle_admin(self, request):
+    filename = "playlists.json" # % request.args[1]
+    with open(filename, "wb") as f:
+      request.proto.factory.youtube_playlist.write(f)
+      request.respond("saved")
+
+
+class PlaylistLoadCommand(plugin_base.BaseAdminCommand):
+
+  def handle_admin(self, request):
+    filename = "playlists.json" # % request.args[1]
+    with open(filename) as f:
+      request.proto.factory.youtube_playlist.read(f)
+      request.respond("loaded")
+
+
 class PlaylistCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
@@ -66,3 +84,5 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
 def register():
   command.CommandHandler.register('pl', PlaylistCommand())
   command.CommandHandler.register('plx', PlaylistClearCommand())
+  command.CommandHandler.register('plsave', PlaylistSaveCommand())
+  command.CommandHandler.register('plload', PlaylistLoadCommand())
