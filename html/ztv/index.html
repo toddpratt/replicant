@@ -8,6 +8,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js">    
     </script>    
     <script id="ytapi"></script>
+    <style>
+      * { margin:0; padding:0; border:0; }
+      #player {
+        position: fixed;
+        top:2px;
+        left:2px;
+      }
+      #extra {
+        position: fixed;
+        top:420px;
+        left: 8px;
+      }
+      #playlist {
+        top:2px;
+        margin-left:645px;
+        max-width:700;
+      }
+      .panel {
+        background: #AFAFAF; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(left, #AFAFAF , #FFFFFF); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(right, #AFAFAF, #FFFFFF); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(right, #AFAFAF, #FFFFFF); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(to right, #AFAFAF , #FFFFFF); /* Standard syntax */
+        background-color: #AFAFAF;
+        margin-bottom:4px;
+        padding:3px;
+      }
+    </style>
   </head>
   <body>
     <script>
@@ -84,14 +112,18 @@
       });
       var video_template;
     </script>
-    <div style="float:right" id="playlist"></div>
     <div id="player"></div>
-    <div style="display:none" id="playlist-video-template">
+    <div id="extra">
+    </div>
+    <div id="playlist"></div>
+    <script type="text/x-handlebars-template" id="playlist-video-template">
+      <div class="panel">
       <a href="javascript:play_video('{{vid}}');">
         <div>{{title}} </div>
         <div><img src="{{img_src}}"></div>
         <div><small>added by {{user}}</small></div>
       </a>
-    </div>
+      </div>
+    </script>
   </body>
 </html>
