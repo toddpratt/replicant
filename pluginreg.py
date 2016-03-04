@@ -3,7 +3,7 @@ import glob
 import command
 import proto
 
-def reload_commands():
+def reload_commands(catalog):
   proto.BotProtocol.reset_plugins()
   names = glob.glob('plugin_*.py')
   for name in names:
@@ -12,4 +12,4 @@ def reload_commands():
     reload(module)
     registrar = getattr(module, 'register', None)
     if registrar:
-      registrar()
+      registrar(catalog)

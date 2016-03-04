@@ -22,9 +22,6 @@ if __name__ == '__main__':
   servers = {}
   catalog = {}
   result_sets = results.Results()
-  pluginreg.reload_commands(catalog)
-  command_handler = command.CommandHandler(
-          f.db, f.users, conf, result_sets, catalog)
   yt_playlist = playlist.Playlist()
 
   for db_name, db_config in conf['databases'].iteritems():
@@ -32,6 +29,10 @@ if __name__ == '__main__':
 
   db = databases['default']
   users = userdb.UserDB(db)
+  pluginreg.reload_commands(catalog)
+  command_handler = command.CommandHandler(
+          db, users, conf, result_sets, catalog)
+
   for server, server_config in conf['servers'].iteritems():
     servers[server] = f = factory.BotFactory()
     f.db = db
