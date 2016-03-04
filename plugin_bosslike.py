@@ -29,5 +29,5 @@ class BossCommand(plugin_base.DatabaseCommand):
       query = 'INSERT INTO bosslike (phrase) VALUES (?)'
       self.runQuery(request, query, args=(args[1], ))
 
-def register():
+def register(catalog):
   command.CommandHandler.register('boss', BossCommand())

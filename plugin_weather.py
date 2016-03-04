@@ -21,5 +21,5 @@ class WeatherCommand(plugin_api.JsonApiCommand):
                     "conditions: %(description)s" % values)
 
 
-def register():
+def register(catalog):
   command.CommandHandler.register('w', WeatherCommand())

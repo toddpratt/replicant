@@ -25,7 +25,7 @@ class ShowCommand(plugin_base.BaseAdminCommand):
     key, target = request.conf.get_parent(key)
     request.respond(json.dumps(target[key]))
 
-def register():
+def register(catalog):
   reload(config)
   command.CommandHandler.register('csave', SaveCommand())
   command.CommandHandler.register('ch', ChangeCommand())

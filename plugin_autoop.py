@@ -8,5 +8,5 @@ class JoinPlugin(object):
     if req.user in proto.factory.conf['plugins']['auto-op']:
       proto.mode(channels[0], True, 'o', user=req.nick)
 
-def register():
+def register(catalog):
   proto.BotProtocol.register_plugin(JoinPlugin)

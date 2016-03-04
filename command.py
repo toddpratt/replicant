@@ -6,12 +6,12 @@ class CommandHandler(object):
   def register(cls, command, handler):
     cls.commands[command] = handler
 
-  def __init__(self, db, users, lines, conf, results):
+  def __init__(self, db, users, conf, results, catalog):
     self.db = db
     self.users = users
-    self.lines = lines
     self.conf = conf
     self.results = results
+    self._catalog = catalog
 
   def handle(self, request):
     print request
@@ -23,7 +23,6 @@ class CommandHandler(object):
     else:
       request.db = self.db
       request.users = self.users
-      request.lines = self.lines
       request.conf = self.conf
       request.results = self.results
       if command_name in self.commands:
@@ -38,7 +37,7 @@ class CommandHandler(object):
   def do_reload(self, request):
     if request.account in self.users:
       reload(pluginreg)
-      pluginreg.reload_commands()
+      pluginreg.reload_commands(self._catalog)
       request.respond('reloaded')
     else:
       request.respond('You ain\'t no admin I ever heard of.')

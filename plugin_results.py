@@ -27,13 +27,5 @@ class RCountCommand(plugin_base.BaseAdminCommand):
     if invalids:
       request.respond('invalid keys: ' + ', '.join(invalids))
 
-class WriteHistoryCommand(plugin_base.BaseAdminCommand):
-
-  def handle_admin(self, request):
-    reload(config)
-    config.save_history(request.lines)
-    request.respond('mkay')
-
-def register():
+def register(catalog):
   command.CommandHandler.register('rc', RCountCommand())
-  command.CommandHandler.register('wh', WriteHistoryCommand())

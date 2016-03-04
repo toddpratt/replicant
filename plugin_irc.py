@@ -82,7 +82,7 @@ class InviteCommand(plugin_base.BaseCommand):
   def handle_user(self, request):
     request.proto.invite(request.nick, request.args[1])
 
-def register():
+def register(catalog):
   command.CommandHandler.register('auth', AuthCommand())
   command.CommandHandler.register('irc', IrcCommand())
   command.CommandHandler.register('op', OpCommand())

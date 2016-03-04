@@ -19,6 +19,6 @@ class LastCommand(plugin_base.DatabaseCommand):
   def reportLast(self, result, request):
     request.respond('%s %s %s "%s"' % result[0])
 
-def register():
+def register(catalog):
   pass
   #command.CommandHandler.register('boss', BossCommand())

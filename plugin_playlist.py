@@ -81,7 +81,7 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
   def video_info_failure(self, failure, request, vid):
     request.respond("Error: " + failure.getErrorMessage())
 
-def register():
+def register(catalog):
   command.CommandHandler.register('pl', PlaylistCommand())
   command.CommandHandler.register('plx', PlaylistClearCommand())
   command.CommandHandler.register('plsave', PlaylistSaveCommand())

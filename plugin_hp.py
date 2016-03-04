@@ -211,7 +211,7 @@ def attack(request):
   striker.strike(target, request)
 
 
-def register():
+def register(catalog):
   command.CommandHandler.register('stat', StatCommand())
   command.CommandHandler.register('play', PlayCommand())
   command.CommandHandler.register('strike', StrikeCommand())

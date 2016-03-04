@@ -20,9 +20,11 @@ if __name__ == '__main__':
   conf.load()
   databases = {}
   servers = {}
-  lines = config.load_history()
+  catalog = {}
   result_sets = results.Results()
-  pluginreg.reload_commands()
+  pluginreg.reload_commands(catalog)
+  command_handler = command.CommandHandler(
+          f.db, f.users, conf, result_sets, catalog)
   yt_playlist = playlist.Playlist()
 
   for db_name, db_config in conf['databases'].iteritems():
@@ -44,17 +46,13 @@ if __name__ == '__main__':
     f.prefix = server_config['command_prefix']
 
     f.conf = conf
-    f.lines = lines
     f.users = users
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
-    f.handler = command.CommandHandler(f.db, f.users, lines, conf, result_sets)
+    f.handler = command_handler
     f.youtube_playlist = yt_playlist
     reactor.connectTCP(f.irc_host, f.irc_port, f)
 
   web.start(result_sets, yt_playlist)
-  command_handler = command.CommandHandler(db, users, lines, conf, result_sets)
   linerecv.start(command_handler, servers)
   reactor.run()
-
-  config.save_history(lines)

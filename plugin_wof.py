@@ -97,7 +97,7 @@ class SolveCommand(PuzzleCommand):
       request.respond("Nope!")
 
 
-def register():
+def register(catalog):
   command.CommandHandler.register('wof', WOFCommand())
   command.CommandHandler.register('solve', SolveCommand())
   command.CommandHandler.register('g', GiveMeACommand())
