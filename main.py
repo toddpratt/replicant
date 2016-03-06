@@ -22,6 +22,7 @@ if __name__ == '__main__':
   servers = {}
   catalog = catalog.Catalog(conf)
   catalog.add('yt_playlist', playlist.Playlist())
+  catalog.add('databases', databases)
   result_sets = results.Results()
 
   for db_name, db_config in conf['databases'].iteritems():
@@ -30,11 +31,10 @@ if __name__ == '__main__':
   db = databases['default']
   pluginreg.reload_commands(catalog)
   command_handler = command.CommandHandler(
-          db, conf, result_sets, catalog)
+          conf, result_sets, catalog)
 
   for server, server_config in conf['servers'].iteritems():
     servers[server] = f = factory.BotFactory()
-    f.db = db
 
     f.ircnet = server
     f.channels = [c for c in server_config['channels']]

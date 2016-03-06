@@ -39,6 +39,9 @@ class DatabaseCommand(BaseAdminCommand):
     super(DatabaseCommand, self).__init__(catalog=catalog)
     self.query = query
 
+  def get_db(self):
+    return self._catalog.get('databases')['default']
+
   def handle_admin(self, request):
     self.handle_query(request)
 
@@ -46,7 +49,7 @@ class DatabaseCommand(BaseAdminCommand):
     self.handle_query(request)
 
   def handle_query(self, request, args=tuple()):
-    d = request.db.runQuery(self.query, args)
+    d = self.get_db().runQuery(self.query, args)
     d.addCallback(self.report_success, request)
     d.addErrback(self.report_error, request)
 

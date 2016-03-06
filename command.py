@@ -6,8 +6,7 @@ class CommandHandler(object):
   def register(cls, command, handler):
     cls.commands[command] = handler
 
-  def __init__(self, db, conf, results, catalog):
-    self.db = db
+  def __init__(self, conf, results, catalog):
     self.conf = conf
     self.results = results
     self._catalog = catalog
@@ -20,7 +19,6 @@ class CommandHandler(object):
     except ValueError:
       pass
     else:
-      request.db = self.db
       request.conf = self.conf
       request.results = self.results
       if command_name in self.commands:

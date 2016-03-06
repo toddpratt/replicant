@@ -56,7 +56,7 @@ class OpmeCommand(plugin_base.BaseAdminCommand):
     def failure(failure, request):
       request.respond('error: %s' % failure.getErrorMessage())
 
-    d = request.db.runQuery(query, (request.channel, request.account))
+    d = self.get_db().runQuery(query, (request.channel, request.account))
     d.addCallback(success, request)
     d.addErrback(failure, request)
 
@@ -74,7 +74,7 @@ class OpsCommand(plugin_base.BaseCommand):
       else:
         request.respond('I don\'t know of any ops on this channel.')
 
-    d = request.db.runQuery(query, (request.channel, ))
+    d = self.get_db().runQuery(query, (request.channel, ))
     d.addCallback(success, request)
 
 class InviteCommand(plugin_base.BaseCommand):

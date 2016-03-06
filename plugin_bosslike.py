@@ -9,7 +9,7 @@ class BossCommand(plugin_base.DatabaseCommand):
   def runQuery(self, request, query, report_success=None, args=tuple()):
     if report_success is None:
       report_success = self.report_success
-    d = request.db.runQuery(query, args)
+    d = self.get_db().runQuery(query, args)
     d.addCallback(report_success, request)
     d.addErrback(self.report_error, request)
 
