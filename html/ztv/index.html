@@ -51,14 +51,24 @@
         //event.target.playVideo();
       }
       function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.FINISHED) {
+        console.log("Event data:" + event.data + "    " + YT.PlayerState.FINISHED);
+        if (event.data == YT.PlayerState.ENDED) {
+          play_next();
         }
       }
       function stopVideo() {
         //player.stopVideo();
       }
+      function play_next() {
+        play_video($(document).attr("playlist").pop().vid);
+      }
       function play_video(vid) {
         player.loadVideoById(vid);
+      }
+      function play_all() {
+        var data = $(document).attr("playlist_raw");
+        $(document).attr("playlist", data);
+        play_video(data.pop().vid);
       }
       function check_for_new() {
         console.log("polling for new videos");
@@ -80,6 +90,7 @@
           url: "/playlist",
           dataType: "json",
           success: function(data, textStatus) {
+            $(document).attr("playlist_raw", data);
             $("#playlist").empty();
             for(var i = data.length - 1; i >= 0; --i) {
               video = data[i];
@@ -101,6 +112,8 @@
         });
       }
       $(document).ready(function() {
+        $(this).attr("playlist_raw", []);
+        $(this).attr("playlist", []);
         var video_template_src = $("#playlist-video-template").html();
         video_template = Handlebars.compile(video_template_src);
         $("#ytapi").attr('src', "https://www.youtube.com/iframe_api");
@@ -110,6 +123,8 @@
     </script>
     <div id="player"></div>
     <div id="extra">
+      <a href="javascript:play_all()">play all</a>
+      <a href="javascript:play_next()">next</a>
     </div>
     <div id="playlist"></div>
     <script type="text/x-handlebars-template" id="playlist-video-template">
