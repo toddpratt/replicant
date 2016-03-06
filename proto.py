@@ -16,7 +16,7 @@ class BotProtocol(irc.IRCClient):
 
   @classmethod
   def register_plugin(cls, plugin):
-    cls.plugins.append(plugin())
+    cls.plugins.append(plugin)
 
   def signedOn(self):
     for channel in self.factory.channels:
@@ -35,7 +35,7 @@ class BotProtocol(irc.IRCClient):
       else:
         respond = self.respond_on_channel
       request = self.factory.request_factory(
-          fulluser, channel, msg, respond, self)
+          fulluser, channel, msg, respond, self, self.factory.ircnet)
       self.factory.handler.handle(request)
     self.private_message(fulluser, channel, msg)
 
@@ -44,7 +44,6 @@ class BotProtocol(irc.IRCClient):
       for plugin in BotProtocol.plugins:
         method = getattr(plugin, name, None)
         if method:
-          print args, kwargs
           method(*args, **kwargs)
     return wrapper
 

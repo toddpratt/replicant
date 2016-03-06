@@ -13,7 +13,7 @@ class PlaylistError(Exception):
 class PlaylistClearCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
-    request.proto.factory.youtube_playlist.clear()
+    self._catalog.get('yt_playlist').clear()
     request.respond("OK")
 
 
@@ -22,7 +22,7 @@ class PlaylistSaveCommand(plugin_base.BaseAdminCommand):
   def handle_admin(self, request):
     filename = "playlists.json" # % request.args[1]
     with open(filename, "wb") as f:
-      request.proto.factory.youtube_playlist.write(f)
+      self._catalog.get('yt_playlist').write(f)
       request.respond("saved")
 
 
@@ -31,7 +31,7 @@ class PlaylistLoadCommand(plugin_base.BaseAdminCommand):
   def handle_admin(self, request):
     filename = "playlists.json" # % request.args[1]
     with open(filename) as f:
-      request.proto.factory.youtube_playlist.read(f)
+      self._catalog.get('yt_playlist').read(f)
       request.respond("loaded")
 
 
@@ -43,8 +43,8 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
   def handle_user(self, request):
     url = request.args[1]
     result = urlparse.urlparse(url)
-    conf = request.conf['plugins']['youtube']
-    playlist = request.proto.factory.youtube_playlist
+    conf = self._catalog.get_plugin_config('youtube')
+    playlist = self._catalog.get('yt_playlist')
     try:
       if result.scheme not in ('http', 'https'):
         raise PlaylistError("Invalid URL scheme.")
@@ -74,7 +74,7 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
 
   def video_info_success(self, info, request, vid):
     info = json.loads(info)
-    playlist = request.proto.factory.youtube_playlist
+    playlist = self._catalog.get('yt_playlist')
     playlist.append({"user": request.nick, "vid": vid, "data": info})
     request.respond(info["items"][0]["snippet"]["title"] + ": OK")
 
@@ -84,5 +84,5 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
 def register(catalog):
   command.CommandHandler.register('pl', PlaylistCommand())
   command.CommandHandler.register('plx', PlaylistClearCommand())
-  command.CommandHandler.register('plsave', PlaylistSaveCommand())
-  command.CommandHandler.register('plload', PlaylistLoadCommand())
+  command.CommandHandler.register('plsave', PlaylistSaveCommand(catalog))
+  command.CommandHandler.register('plload', PlaylistLoadCommand(catalog))

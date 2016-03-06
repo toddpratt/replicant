@@ -5,7 +5,7 @@ import plugin_api
 class WeatherCommand(plugin_api.JsonApiCommand):
 
   def compute_url(self, request):
-    values = dict(request.conf['plugins']['weather'])
+    values = dict(self.config("weather"))
     values['zip'] = request.args[1]
     return "%(url)s?zip=%(zip)s&appid=%(key)s&units=imperial" % values
 
@@ -22,4 +22,4 @@ class WeatherCommand(plugin_api.JsonApiCommand):
 
 
 def register(catalog):
-  command.CommandHandler.register('w', WeatherCommand())
+  command.CommandHandler.register('w', WeatherCommand(catalog))
