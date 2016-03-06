@@ -7,7 +7,7 @@ import plugin_base
 class SaveCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
-    request.conf.save()
+    self._catalog.config.save()
     request.respond('OK')
 
 class ChangeCommand(plugin_base.BaseAdminCommand):
@@ -27,6 +27,6 @@ class ShowCommand(plugin_base.BaseAdminCommand):
 
 def register(catalog):
   reload(config)
-  command.CommandHandler.register('csave', SaveCommand())
-  command.CommandHandler.register('ch', ChangeCommand())
-  command.CommandHandler.register('sh', ShowCommand())
+  command.CommandHandler.register('csave', SaveCommand(catalog))
+  command.CommandHandler.register('ch', ChangeCommand(catalog))
+  command.CommandHandler.register('sh', ShowCommand(catalog))

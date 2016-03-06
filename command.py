@@ -6,9 +6,8 @@ class CommandHandler(object):
   def register(cls, command, handler):
     cls.commands[command] = handler
 
-  def __init__(self, db, users, conf, results, catalog):
+  def __init__(self, db, conf, results, catalog):
     self.db = db
-    self.users = users
     self.conf = conf
     self.results = results
     self._catalog = catalog
@@ -22,7 +21,6 @@ class CommandHandler(object):
       pass
     else:
       request.db = self.db
-      request.users = self.users
       request.conf = self.conf
       request.results = self.results
       if command_name in self.commands:
@@ -35,7 +33,8 @@ class CommandHandler(object):
     request.respond('registered commands: ' + ', '.join(self.commands))
 
   def do_reload(self, request):
-    if request.account in self.users:
+    config = self.conf["servers"][request.chatnet]
+    if request.account in config["admin-users"]:
       reload(pluginreg)
       pluginreg.reload_commands(self._catalog)
       request.respond('reloaded')

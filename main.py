@@ -12,7 +12,6 @@ import linerecv
 import playlist
 import proto
 import request
-import userdb
 import web
 import results
 
@@ -29,10 +28,9 @@ if __name__ == '__main__':
     databases[db_name] = adbapi.ConnectionPool(*db_config)
 
   db = databases['default']
-  users = userdb.UserDB(db)
   pluginreg.reload_commands(catalog)
   command_handler = command.CommandHandler(
-          db, users, conf, result_sets, catalog)
+          db, conf, result_sets, catalog)
 
   for server, server_config in conf['servers'].iteritems():
     servers[server] = f = factory.BotFactory()
@@ -49,7 +47,6 @@ if __name__ == '__main__':
     f.prefix = server_config['command_prefix']
 
     f.conf = conf
-    f.users = users
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
     f.handler = command_handler

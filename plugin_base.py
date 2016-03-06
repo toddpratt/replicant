@@ -6,11 +6,11 @@ class BaseCommand(object):
   def __init__(self, catalog=None):
     self._catalog = catalog
 
-  def get_admin_users(self):
-    return self._catalog.get('admin-users')
+  def get_admin_users(self, chatnet):
+    return self._catalog.config["servers"][chatnet]['admin-users']
 
   def handle(self, request):
-    if request.account in request.users:
+    if request.account in self.get_admin_users(request.chatnet):
       self.handle_admin(request)
     else:
       self.handle_user(request)
