@@ -4,12 +4,14 @@ import threading
 
 class Playlist(object):
 
-  def __init__(self):
+  def __init__(self, filename):
+    self._filename = filename
     self._pl = []
     self._cbs = []
 
   def append(self, item):
     self._pl.append(item)
+    self.save()
     self.do_callbacks()
 
   def do_callbacks(self):
@@ -28,6 +30,14 @@ class Playlist(object):
 
   def write(self, f):
     json.dump(self._pl, f, indent=2, sort_keys=True)
+
+  def save(self):
+    with open(self._filename, "w") as f:
+      self.write(f)
+
+  def load(self):
+    with open(self._filename) as f:
+      self.read(f)
 
   def addCallback(self, cb):
     self._cbs.append(cb)

@@ -20,18 +20,20 @@ if __name__ == '__main__':
   conf.load()
   databases = {}
   servers = {}
-  catalog = catalog.Catalog(conf)
-  catalog.add('yt_playlist', playlist.Playlist())
-  catalog.add('databases', databases)
+  ctlg = catalog.Catalog(conf)
+  ytpl = playlist.Playlist(ctlg.get_plugin_config('youtube')['filename'])
+  ytpl.load()
+  ctlg.add('yt_playlist', ytpl)
+  ctlg.add('databases', databases)
   result_sets = results.Results()
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
 
   db = databases['default']
-  pluginreg.reload_commands(catalog)
+  pluginreg.reload_commands(ctlg)
   command_handler = command.CommandHandler(
-          conf, result_sets, catalog)
+          conf, result_sets, ctlg)
 
   for server, server_config in conf['servers'].iteritems():
     servers[server] = f = factory.BotFactory()
@@ -52,6 +54,6 @@ if __name__ == '__main__':
     f.handler = command_handler
     reactor.connectTCP(f.irc_host, f.irc_port, f)
 
-  web.start(result_sets, catalog)
+  web.start(result_sets, ctlg)
   linerecv.start(command_handler, servers)
   reactor.run()

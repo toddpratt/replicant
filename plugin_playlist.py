@@ -20,19 +20,15 @@ class PlaylistClearCommand(plugin_base.BaseAdminCommand):
 class PlaylistSaveCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
-    filename = "playlists.json" # % request.args[1]
-    with open(filename, "wb") as f:
-      self._catalog.get('yt_playlist').write(f)
-      request.respond("saved")
+    self._catalog.get('yt_playlist').save()
+    request.respond("saved")
 
 
 class PlaylistLoadCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
-    filename = "playlists.json" # % request.args[1]
-    with open(filename) as f:
-      self._catalog.get('yt_playlist').read(f)
-      request.respond("loaded")
+    self._catalog.get('yt_playlist').load()
+    request.respond("loaded")
 
 
 class PlaylistCommand(plugin_base.BaseAdminCommand):
