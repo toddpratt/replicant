@@ -6,7 +6,10 @@ class Request(object):
     self.fulluser = fulluser
     self.channel = channel
     self.message = msg
-    self._respond = respond
+    if respond:
+      self._respond = respond
+    else:
+      self._respond = self.default_respond
     self.proto = proto
     self.chatnet = chatnet
 
@@ -15,6 +18,9 @@ class Request(object):
 
   def say(self, channel, message):
     self.proto.say(channel, message)
+
+  def default_respond(self, message):
+    self.say("%s: %s" % (self.nick, message))
 
   @property
   def args(self):
