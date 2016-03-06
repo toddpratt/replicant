@@ -3,6 +3,7 @@ from twisted.internet import reactor
 
 import os
 
+import catalog
 import command
 import pluginreg
 import config
@@ -20,9 +21,9 @@ if __name__ == '__main__':
   conf.load()
   databases = {}
   servers = {}
-  catalog = {}
+  catalog = catalog.Catalog(conf)
+  catalog.add('yt_playlist', playlist.Playlist())
   result_sets = results.Results()
-  yt_playlist = playlist.Playlist()
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
@@ -37,6 +38,7 @@ if __name__ == '__main__':
     servers[server] = f = factory.BotFactory()
     f.db = db
 
+    f.ircnet = server
     f.channels = [c for c in server_config['channels']]
     f.irc_host = server_config['host']
     f.irc_port = server_config['port']
@@ -51,9 +53,8 @@ if __name__ == '__main__':
     f.request_factory = request.Request
     f.protocol = proto.BotProtocol
     f.handler = command_handler
-    f.youtube_playlist = yt_playlist
     reactor.connectTCP(f.irc_host, f.irc_port, f)
 
-  web.start(result_sets, yt_playlist)
+  web.start(result_sets, catalog)
   linerecv.start(command_handler, servers)
   reactor.run()

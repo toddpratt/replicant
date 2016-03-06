@@ -55,8 +55,9 @@ class PlaylistResource(resource.Resource):
 def get_url(name):
     return 'http://104.131.128.201:8000/results/%s' % name
 
-def start(results, playlist):
+def start(results, catalog):
   root = static.File("html")
+  playlist = catalog.get('yt_playlist')
   root.putChild('results', ResultsResource(results))
   root.putChild('playlist', PlaylistResource(playlist))
   root.putChild('playlist_push', PlaylistPushResource(playlist))

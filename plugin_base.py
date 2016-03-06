@@ -3,6 +3,12 @@ import web
 
 class BaseCommand(object):
 
+  def __init__(self, catalog=None):
+    self._catalog = catalog
+
+  def get_admin_users(self):
+    return self._catalog.get('admin-users')
+
   def handle(self, request):
     if request.account in request.users:
       self.handle_admin(request)
@@ -15,6 +21,10 @@ class BaseCommand(object):
   def handle_user(self, request):
     raise NotImplementedError('override handle_admin')
 
+  def config(self, name):
+    return self._catalog.get_plugin_config(name)
+
+
 class BaseAdminCommand(BaseCommand):
 
   def handle_admin(self, request):
@@ -25,7 +35,8 @@ class BaseAdminCommand(BaseCommand):
 
 class DatabaseCommand(BaseAdminCommand):
 
-  def __init__(self, query):
+  def __init__(self, query, catalog=None):
+    super(DatabaseCommand, self).__init__(catalog=catalog)
     self.query = query
 
   def handle_admin(self, request):

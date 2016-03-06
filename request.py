@@ -2,12 +2,13 @@ import shlex
 
 class Request(object):
 
-  def __init__(self, fulluser, channel, msg, respond, proto):
+  def __init__(self, fulluser, channel, msg, respond, proto, chatnet):
     self.fulluser = fulluser
     self.channel = channel
     self.message = msg
     self._respond = respond
     self.proto = proto
+    self.chatnet = chatnet
 
   def respond(self, message):
     self._respond(self, message)
@@ -32,4 +33,5 @@ class Request(object):
     return self.fulluser.split('@', 1)[1]
 
   def for_reply(self, fulluser):
-    return Request(fulluser, self.channel, '', self._respond, self.proto)
+    return Request(fulluser, self.channel, '', self._respond, self.proto,
+            self.chatnet)
