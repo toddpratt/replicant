@@ -3,8 +3,9 @@ import command
 
 class BossCommand(plugin_base.DatabaseCommand):
 
-  def __init__(self):
-    pass
+  def __init__(self, catalog):
+    # bypass the DatabaseCommand __init__
+    plugin_base.BaseCommand.__init__(self, catalog)
 
   def runQuery(self, request, query, report_success=None, args=tuple()):
     if report_success is None:
@@ -30,4 +31,4 @@ class BossCommand(plugin_base.DatabaseCommand):
       self.runQuery(request, query, args=(args[1], ))
 
 def register(catalog):
-  command.CommandHandler.register('boss', BossCommand())
+  command.CommandHandler.register('boss', BossCommand(catalog))
