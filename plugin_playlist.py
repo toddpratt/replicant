@@ -78,7 +78,7 @@ class PlaylistCommand(plugin_base.BaseAdminCommand):
     request.respond("Error: " + failure.getErrorMessage())
 
 def register(catalog):
-  command.CommandHandler.register('pl', PlaylistCommand())
-  command.CommandHandler.register('plx', PlaylistClearCommand())
+  command.CommandHandler.register('pl', PlaylistCommand(catalog))
+  command.CommandHandler.register('plx', PlaylistClearCommand(catalog))
   command.CommandHandler.register('plsave', PlaylistSaveCommand(catalog))
   command.CommandHandler.register('plload', PlaylistLoadCommand(catalog))

@@ -39,7 +39,7 @@ class IrcCommand(plugin_base.BaseAdminCommand):
 
 class OpCommand(plugin_base.BaseAdminCommand):
 
-  def handle_admin(self, request):
+  def handle_user(self, request):
     request.proto.mode(request.channel, True, 'o', user=request.args[1])
 
 class OpmeCommand(plugin_base.BaseAdminCommand):
@@ -83,8 +83,8 @@ class InviteCommand(plugin_base.BaseCommand):
     request.proto.invite(request.nick, request.args[1])
 
 def register(catalog):
-  command.CommandHandler.register('auth', AuthCommand())
-  command.CommandHandler.register('irc', IrcCommand())
-  command.CommandHandler.register('op', OpCommand())
-  command.CommandHandler.register('ops', OpsCommand())
-  command.CommandHandler.register('opme', OpmeCommand())
+  command.CommandHandler.register('auth', AuthCommand(catalog))
+  command.CommandHandler.register('irc', IrcCommand(catalog))
+  command.CommandHandler.register('op', OpCommand(catalog))
+  command.CommandHandler.register('ops', OpsCommand(catalog))
+  command.CommandHandler.register('opme', OpmeCommand(catalog))
