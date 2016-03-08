@@ -10,6 +10,9 @@
     <script id="ytapi"></script>
     <style>
       * { margin:0; padding:0; border:0; }
+      a,a:visited {
+        text-decoration:none;
+      }
       #player {
         position: fixed;
       }
@@ -18,6 +21,7 @@
         top:420px;
       }
       #playlist {
+        vertical-align:middle;
         margin-left:641px;
         max-width:700;
       }
@@ -90,19 +94,8 @@
           url: "/playlist",
           dataType: "json",
           success: function(data, textStatus) {
-            $(document).attr("playlist_raw", data);
-            $("#playlist").empty();
-            for(var i = data.length - 1; i >= 0; --i) {
-              video = data[i];
-              var context = {
-                title: video.data.items[0].snippet.title,
-                vid: video.vid,
-                user: video.user,
-                img_src: video.data.items[0].snippet.thumbnails.default.url
-              };
-              var html = video_template(context);
-              $("#playlist").append(html);
-            }
+            $(document).attr("playlist_raw", data.reverse());
+            $("#playlist").empty().append(video_template({videos: data}));
             check_for_new();
           },
           failure: function(data, textStatus) {
@@ -122,19 +115,28 @@
       var video_template;
     </script>
     <div id="player"></div>
-    <div id="extra">
-      <a href="javascript:play_all()">play all</a>
-      <a href="javascript:play_next()">next</a>
+    <h2 id="extra">
+      <a href="javascript:play_all()">all</a>
+      <a href="javascript:play_next()">skip</a>
+    </h2>
+    <div id="playlist">
     </div>
-    <div id="playlist"></div>
     <script type="text/x-handlebars-template" id="playlist-video-template">
-      <div class="panel">
-      <a href="javascript:play_video('{{vid}}');">
-        <div>{{title}}</div>
-        <div><img src="{{img_src}}"></div>
-        <div><small>added by {{user}}</small></div>
-      </a>
-      </div>
+        {{#each videos}}
+        <div class="panel">
+          <a href="javascript:play_video('{{vid}}');">
+            {{#with data.items.0.snippet}}
+            <div>{{title}}</div>
+            <div>
+              <img src="{{thumbnails.default.url}}">
+              <span class="select">*</span>
+            </div>
+            {{/with}}
+            <div><small>added by {{user}}</small></div>
+          </a>
+        </div>
+        {{/each}}
     </script>
   </body>
 </html>
+
