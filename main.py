@@ -25,6 +25,7 @@ if __name__ == '__main__':
   ytpl.load()
   ctlg.add('yt_playlist', ytpl)
   ctlg.add('databases', databases)
+  ctlg.add('servers', servers)
   result_sets = results.Results()
 
   for db_name, db_config in conf['databases'].iteritems():

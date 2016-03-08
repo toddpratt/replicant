@@ -1,3 +1,4 @@
+import fnmatch
 import shlex
 
 class Request(object):
@@ -37,6 +38,9 @@ class Request(object):
   @property
   def account(self):
     return self.fulluser.split('@', 1)[1]
+
+  def like(self, pattern):
+    return fnmatch.fnmatchcase(self.account, pattern)
 
   def for_reply(self, fulluser):
     return Request(fulluser, self.channel, '', self._respond, self.proto,

@@ -13,3 +13,9 @@ class Catalog(object):
 
   def get(self, key):
     return self._catalog[key]
+
+  def get_channel_config(self, chatnet, channel):
+    return self.config['servers'][chatnet]["channels"][channel]
+
+  def save_config(self):
+    self.config.save()
