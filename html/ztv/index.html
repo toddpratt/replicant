@@ -16,7 +16,7 @@
       #player {
         position: fixed;
       }
-      #extra {
+      #controls {
         position: fixed;
         top:420px;
       }
@@ -56,12 +56,27 @@
       }
       function onPlayerStateChange(event) {
         console.log("Event data:" + event.data + "    " + YT.PlayerState.FINISHED);
-        if (event.data == YT.PlayerState.ENDED) {
+        if (event.data == YT.PlayerState.PLAYING) {
+          var speed = $("#speed").empty();
+          var rate = player.getPlaybackRate();
+          $.each(player.getAvailablePlaybackRates(), function(index, value) {
+            var option = $("<option></option").text(value).attr('value', value);
+            if (value == rate) {
+              option.attr('selected', 'selected');
+            }
+            speed.append(option);
+          });
+          speed.change(function() {
+            var rate = parseFloat(speed.val());
+            console.log("setting playback rate to: " + rate);
+            player.setPlaybackRate(rate);
+          });
+        } else if (event.data == YT.PlayerState.ENDED) {
           play_next();
         }
       }
-      function stopVideo() {
-        //player.stopVideo();
+      function pause_video() {
+        player.pauseVideo();
       }
       function play_next() {
         play_video($(document).attr("playlist").pop().vid);
@@ -115,9 +130,11 @@
       var video_template;
     </script>
     <div id="player"></div>
-    <h2 id="extra">
+    <h2 id="controls">
       <a href="javascript:play_all()">all</a>
       <a href="javascript:play_next()">skip</a>
+      <a href="javascript:pause_video()">pause</a>
+      <span>rate:<select id="speed"></select></span>
     </h2>
     <div id="playlist">
     </div>
