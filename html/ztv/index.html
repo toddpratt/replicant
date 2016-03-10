@@ -86,12 +86,12 @@
       }
       function play_old_to_new() {
         var data = $(document).attr("playlist_raw");
-        $(document).attr("playlist", data);
+        $(document).attr("playlist", data.reverse());
         play_video(data.pop().vid);
       }
       function play_new_to_old() {
         var data = $(document).attr("playlist_raw");
-        $(document).attr("playlist", data.reverse());
+        $(document).attr("playlist", data);
         play_video(data.pop().vid);
       }
       function check_for_new() {
