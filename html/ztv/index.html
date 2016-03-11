@@ -19,6 +19,8 @@
       #controls {
         position: fixed;
         top:420px;
+        width:640px;
+        text-align: center;
       }
       #playlist {
         vertical-align:middle;
@@ -27,10 +29,20 @@
       }
       .panel {
         background: #AFAFAF; /* For browsers that do not support gradients */
-        background: -webkit-linear-gradient(left, #AFAFAF , #FFFFFF); /* For Safari 5.1 to 6.0 */
+        background: -webkit-linear-gradient(right, #AFAFAF , #FFFFFF); /* For Safari 5.1 to 6.0 */
         background: -o-linear-gradient(right, #AFAFAF, #FFFFFF); /* For Opera 11.1 to 12.0 */
         background: -moz-linear-gradient(right, #AFAFAF, #FFFFFF); /* For Firefox 3.6 to 15 */
         background: linear-gradient(to right, #AFAFAF , #FFFFFF); /* Standard syntax */
+        background-color: #AFAFAF;
+        margin-bottom:4px;
+        padding:4px;
+      }
+      .playing {
+        background: #A0C0FF; /* For browsers that do not support gradients */
+        background: -webkit-linear-gradient(left, #AFAFAF , #FFFFFF); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(left, #AFAFAF, #FFFFFF); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(left, #AFAFAF, #FFFFFF); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(to left, #AFAFAF , #FFFFFF); /* Standard syntax */
         background-color: #AFAFAF;
         margin-bottom:4px;
         padding:4px;
@@ -55,7 +67,6 @@
         //event.target.playVideo();
       }
       function onPlayerStateChange(event) {
-        console.log("Event data:" + event.data + "    " + YT.PlayerState.FINISHED);
         if (event.data == YT.PlayerState.PLAYING) {
           var speed = $("#speed").empty();
           var rate = player.getPlaybackRate();
@@ -68,7 +79,6 @@
           });
           speed.change(function() {
             var rate = parseFloat(speed.val());
-            console.log("setting playback rate to: " + rate);
             player.setPlaybackRate(rate);
           });
         } else if (event.data == YT.PlayerState.ENDED) {
@@ -82,6 +92,8 @@
         play_video($(document).attr("playlist").pop().vid);
       }
       function play_video(vid) {
+        $(".panel").removeClass("playing");
+        $("#" + vid).addClass("playing");
         player.loadVideoById(vid);
       }
       function play_old_to_new() {
@@ -95,16 +107,13 @@
         play_video(data.pop().vid);
       }
       function check_for_new() {
-        console.log("polling for new videos");
         $.ajax({
           url: "/playlist_push",
           dataType: "text",
           success: function(data, textStatus) {
-            console.log("new videos!");
             load_videos();
           },
           complete: function() {
-            console.log("trying again...");
             check_for_new();
           }
         });
@@ -135,18 +144,18 @@
       var video_template;
     </script>
     <div id="player"></div>
-    <h2 id="controls">
-      <a href="javascript:play_old_to_new()">old-to-new</a>
-      <a href="javascript:play_new_to_old()">new-to-old</a>
-      <a href="javascript:play_next()">skip</a>
-      <a href="javascript:pause_video()">pause</a>
+    <h3 id="controls">
+      <a href="javascript:play_old_to_new()">old-to-new</a> --
+      <a href="javascript:play_new_to_old()">new-to-old</a> --
+      <a href="javascript:play_next()">skip</a> --
+      <a href="javascript:pause_video()">pause</a> --
       <span>rate:<select id="speed"></select></span>
-    </h2>
+    </h3>
     <div id="playlist">
     </div>
     <script type="text/x-handlebars-template" id="playlist-video-template">
         {{#each videos}}
-        <div class="panel">
+        <div id="{{vid}}" class="panel">
           <a href="javascript:play_video('{{vid}}');">
             {{#with data.items.0.snippet}}
             <div>{{title}}</div>
