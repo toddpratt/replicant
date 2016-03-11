@@ -41,7 +41,8 @@ class Puzzle(object):
 
 class WOFCommand(plugin_base.DatabaseCommand):
 
-  def __init__(self):
+  def __init__(self, catalog):
+    plugin_base.BaseCommand.__init__(self, catalog)
     self.query = 'SELECT phrase FROM bosslike ORDER BY RANDOM() LIMIT 1'
 
   def handle(self, request):
