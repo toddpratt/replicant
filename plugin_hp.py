@@ -212,9 +212,9 @@ def attack(request):
 
 
 def register(catalog):
-  command.CommandHandler.register('stat', StatCommand())
-  command.CommandHandler.register('play', PlayCommand())
-  command.CommandHandler.register('strike', StrikeCommand())
-  command.CommandHandler.register('heal', HealCommand())
-  command.CommandHandler.register('summon', SummonCommand())
-  command.CommandHandler.register('shazam', ShazamCommand())
+  command.CommandHandler.register('stat', StatCommand(catalog))
+  command.CommandHandler.register('play', PlayCommand(catalog))
+  command.CommandHandler.register('strike', StrikeCommand(catalog))
+  command.CommandHandler.register('heal', HealCommand(catalog))
+  command.CommandHandler.register('summon', SummonCommand(catalog))
+  command.CommandHandler.register('shazam', ShazamCommand(catalog))

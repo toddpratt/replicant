@@ -98,7 +98,7 @@ class SolveCommand(PuzzleCommand):
 
 
 def register(catalog):
-  command.CommandHandler.register('wof', WOFCommand())
-  command.CommandHandler.register('solve', SolveCommand())
-  command.CommandHandler.register('g', GiveMeACommand())
-  command.CommandHandler.register('gimmea', GiveMeACommand())
+  command.CommandHandler.register('wof', WOFCommand(catalog))
+  command.CommandHandler.register('solve', SolveCommand(catalog))
+  command.CommandHandler.register('g', GiveMeACommand(catalog))
+  command.CommandHandler.register('gimmea', GiveMeACommand(catalog))

@@ -9,4 +9,4 @@ class QueryCommand(plugin_base.BaseAdminCommand):
     command.handle_user(request)
 
 def register(catalog):
-  command.CommandHandler.register('query', QueryCommand())
+  command.CommandHandler.register('query', QueryCommand(catalog))

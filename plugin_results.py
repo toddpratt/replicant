@@ -28,4 +28,4 @@ class RCountCommand(plugin_base.BaseAdminCommand):
       request.respond('invalid keys: ' + ', '.join(invalids))
 
 def register(catalog):
-  command.CommandHandler.register('rc', RCountCommand())
+  command.CommandHandler.register('rc', RCountCommand(catalog))

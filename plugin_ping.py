@@ -10,4 +10,4 @@ class PingCommand(plugin_base.BaseCommand):
     request.respond('pong.')
 
 def register(catalog):
-  command.CommandHandler.register('ping', PingCommand())
+  command.CommandHandler.register('ping', PingCommand(catalog))
