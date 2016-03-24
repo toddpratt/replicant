@@ -48,4 +48,13 @@ class BotProtocol(irc.IRCClient):
     return wrapper
 
   irc_JOIN = call_plugins('irc_JOIN')
+  irc_PART = call_plugins('irc_PART')
+  irc_QUIT = call_plugins('irc_QUIT')
+  irc_MODE = call_plugins('irc_MODE')
+  irc_PING = call_plugins('irc_PING')
+  irc_PRIVMSG = call_plugins('irc_PRIVMSG')
+  irc_NOTICE = call_plugins('irc_NOTICE')
+  irc_NICK = call_plugins('irc_NICK')
+  irc_KICK = call_plugins('irc_KICK')
+  irc_TOPIC = call_plugins('irc_TOPIC')
   private_message = call_plugins('privmsg')
