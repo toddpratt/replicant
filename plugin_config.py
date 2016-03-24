@@ -10,6 +10,12 @@ class SaveCommand(plugin_base.BaseAdminCommand):
     self._catalog.config.save()
     request.respond('OK')
 
+class LoadCommand(plugin_base.BaseAdminCommand):
+
+  def handle_admin(self, request):
+    self._catalog.config.load()
+    request.respond('OK')
+
 class ChangeCommand(plugin_base.BaseAdminCommand):
 
   def handle_admin(self, request):
@@ -28,5 +34,6 @@ class ShowCommand(plugin_base.BaseAdminCommand):
 def register(catalog):
   reload(config)
   command.CommandHandler.register('csave', SaveCommand(catalog))
+  command.CommandHandler.register('cload', LoadCommand(catalog))
   command.CommandHandler.register('ch', ChangeCommand(catalog))
   command.CommandHandler.register('sh', ShowCommand(catalog))

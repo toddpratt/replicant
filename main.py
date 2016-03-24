@@ -23,10 +23,11 @@ if __name__ == '__main__':
   ctlg = catalog.Catalog(conf)
   ytpl = playlist.Playlist(ctlg.get_plugin_config('youtube')['filename'])
   ytpl.load()
+  result_sets = results.Results()
   ctlg.add('yt_playlist', ytpl)
   ctlg.add('databases', databases)
   ctlg.add('servers', servers)
-  result_sets = results.Results()
+  ctlg.add('results', results)
 
   for db_name, db_config in conf['databases'].iteritems():
     databases[db_name] = adbapi.ConnectionPool(*db_config)
