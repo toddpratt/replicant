@@ -20,12 +20,14 @@ if __name__ == '__main__':
   conf.load()
   databases = {}
   servers = {}
+  tells = {}
   ctlg = catalog.Catalog(conf)
   ytpl = playlist.Playlist(ctlg.get_plugin_config('youtube')['filename'])
   ytpl.load()
   ctlg.add('yt_playlist', ytpl)
   ctlg.add('databases', databases)
   ctlg.add('servers', servers)
+  ctlg.add('tells', tells)
   result_sets = results.Results()
 
   for db_name, db_config in conf['databases'].iteritems():
