@@ -10,7 +10,8 @@ class BaseCommand(object):
     return self._catalog.config["servers"][chatnet]['admin-users']
 
   def handle(self, request):
-    if request.account in self.get_admin_users(request.chatnet):
+    admin_list = self.get_admin_users(request.chatnet)
+    if request.user in admin_list:
       self.handle_admin(request)
     else:
       self.handle_user(request)
