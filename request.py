@@ -17,9 +17,10 @@ class Request(object):
   def respond(self, message):
     self._respond(self, message)
 
-  def say(self, channel, message):
-    self.proto.say(channel, message)
+  def say(self, message):
+    self.proto.say(self.channel, message)
 
+  @staticmethod
   def default_respond(self, message):
     self.say("%s: %s" % (self.nick, message))
 
