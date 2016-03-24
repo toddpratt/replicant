@@ -16,7 +16,11 @@ class JoinPlugin(object):
     messages = self._catalog.get("tells").get(req.nick, [])
     for message in messages:
       req.respond(message)
-    del self._catalog.get("tells")[req.nick]
+    try:
+      del self._catalog.get("tells")[req.nick]
+    except KeyError:
+      pass
+
 
 class TellCommand(plugin_base.BaseCommand):
 
