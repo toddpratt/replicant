@@ -10,7 +10,13 @@ class IrcCommand(plugin_base.BaseAdminCommand):
     args = request.args[2:]
     method = getattr(request.proto, method_name, None)
     if method:
-      args = [json.loads(s) for s in args]
+      try:
+        args = [json.loads(s) for s in args]
+      except ValueError:
+        try:
+          args = json.loads(request.message)
+        except ValueError:
+          pass
       method(*args)
       request.respond('Okay')
     else:
