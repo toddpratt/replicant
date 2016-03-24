@@ -24,8 +24,9 @@ class OpCommand(plugin_base.BaseAdminCommand):
 class OpmeCommand(plugin_base.BaseAdminCommand):
 
   def handle_user(self, request):
-    ch_cfg = self._catalog.get_channel_config(request.chatnet, request.channel)
-    if request.account in ch_cfg["operators"]:
+    if self._catalog.is_operator(request.chatnet, request.channel,
+            request.account):
+      request.respond('ok i op u nao')
       request.proto.mode(request.channel, True, 'o', user=request.nick)
     else:
       request.respond('you ain\'t no op I ever heard of')
@@ -39,7 +40,6 @@ class InviteCommand(plugin_base.BaseCommand):
     request.proto.invite(request.nick, request.args[1])
 
 def register(catalog):
-  command.CommandHandler.register('auth', AuthCommand(catalog))
   command.CommandHandler.register('irc', IrcCommand(catalog))
   command.CommandHandler.register('op', OpCommand(catalog))
   command.CommandHandler.register('opme', OpmeCommand(catalog))
