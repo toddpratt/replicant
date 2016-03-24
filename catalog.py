@@ -1,3 +1,4 @@
+import fnmatch
 
 class Catalog(object):
 
@@ -19,3 +20,12 @@ class Catalog(object):
 
   def save_config(self):
     self.config.save()
+
+  def is_operator(self, chatnet, channel, account):
+    operators = self.get_channel_config(chatnet, channel)["operators"]
+    print account
+    print operators
+    for oper in operators:
+      if fnmatch.fnmatchcase(account, oper):
+        return True
+    return False

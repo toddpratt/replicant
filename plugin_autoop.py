@@ -11,14 +11,14 @@ class JoinPlugin(object):
   def irc_JOIN(self, proto, fulluser, channels):
     req = request.Request(fulluser, channels[0], '', None, proto,
             proto.factory.ircnet)
-    if req.user in self._catalog.get_channel_config(req.chatnet, req.channel)["operators"]:
+    if self._catalog.is_operator(req.chatnet, req.channel, req.account):
       proto.mode(channels[0], True, 'o', user=req.nick)
 
 
 class CheckOpMatchCommand(plugin_base.BaseCommand):
 
   def handle_user(self, req):
-    if req.user in self._catalog.get_channel_config(req.chatnet, req.channel)["operators"]:
+    if self._catalog.is_operator(req.chatnet, req.channel, req.account):
       req.respond('you are an operator')
     else:
       req.respond('you are not an operator -- maybe authenticate to services?')
