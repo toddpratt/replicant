@@ -37,11 +37,10 @@ class BotProtocol(irc.IRCClient):
       request = self.factory.request_factory(
           fulluser, channel, msg, respond, self, self.factory.ircnet)
       self.factory.handler.handle(request)
-    self.private_message(fulluser, channel, msg)
 
   def call_plugins(name):
     def wrapper(*args, **kwargs):
-      for plugin in BotProtocol.plugins:
+      for plugin in BotProtocol.plugins + [irc.IRCClient]:
         method = getattr(plugin, name, None)
         if method:
           method(*args, **kwargs)
@@ -57,4 +56,3 @@ class BotProtocol(irc.IRCClient):
   irc_NICK = call_plugins('irc_NICK')
   irc_KICK = call_plugins('irc_KICK')
   irc_TOPIC = call_plugins('irc_TOPIC')
-  private_message = call_plugins('privmsg')
